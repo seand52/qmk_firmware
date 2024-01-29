@@ -24,17 +24,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define _SYMBOLS 2
 #define _RANDOM 3
 #define _NUMPAD 4
+#define _ARROWSTWO 5
 
-enum custom_keycodes {
-  DVORAK = SAFE_RANGE,
-  FUNKEYS,
-  SYMBOLS,
-  RANDOM,
-  NUMPAD,
-  LALT_SPACE,
-  SELWORD,
-  SRCHSEL
+
+enum {
+    TD_SCO_CO
 };
+
+// Tap Dance definitions
+tap_dance_action_t tap_dance_actions[] = {
+    [TD_SCO_CO] = ACTION_TAP_DANCE_DOUBLE(KC_SEMICOLON, KC_COLN),
+};
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_DVORAK] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
@@ -42,9 +43,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_NO, LCTL_T(KC_A),   LT(_SYMBOLS, KC_O),    KC_E,    LALT_T(KC_U), KC_I,            KC_D,    RALT_T(KC_H),    KC_T,    KC_N,   RCTL_T(KC_S),    KC_MINUS,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      QK_LEAD, KC_SEMICOLON, KC_Q,   KC_J,   KC_K,    KC_X,                        KC_B,    KC_M,    KC_W,     KC_V,    KC_Z,   RSFT_T(KC_SLASH),
+      QK_LEAD, TD(TD_SCO_CO), KC_Q,   KC_J,   KC_K,    KC_X,                        KC_B,    KC_M,    KC_W,     KC_V,    KC_Z,   RSFT_T(KC_SLASH),
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          MO(_FUNKEYS),   LT(_FUNKEYS, KC_ENT),  LT(_NUMPAD,KC_SPACE), KC_LSFT,  LT(_RANDOM, KC_BSPC),   KC_RALT
+                                          MO(_ARROWSTWO),   LT(_FUNKEYS, KC_ENT),  LT(_NUMPAD,KC_SPACE), KC_LSFT,  LT(_RANDOM, KC_BSPC),   KC_RALT
                                       //`--------------------------'  `--------------------------'
 
   ),
@@ -53,9 +54,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
        RGB_TOG, KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC,                            KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, _______,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      RGB_MOD, KC_MPRV, LCTL_T(KC_MNXT), KC_VOLU, KC_PGUP, KC_UNDS,                            KC_LEFT, KC_DOWN, KC_UP,   KC_RIGHT, SRCHSEL, KC_BACKSLASH,
+      RGB_MOD, KC_MPRV, LCTL_T(KC_MNXT), KC_VOLU, KC_PGUP, KC_UNDS,                            KC_LEFT, KC_DOWN, KC_UP,   KC_RIGHT, KC_RIGHT, KC_BACKSLASH,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-     KC_MUTE, KC_MSTP, KC_MPLY, KC_VOLD, KC_PGDN, KC_MINS,                      KC_PLUS, KC_END,  SELWORD, RGB_SAD, RGB_VAD, _______,
+     KC_MUTE, KC_MSTP, KC_MPLY, KC_VOLD, KC_PGDN, KC_MINS,                      KC_PLUS, KC_END,  KC_END, RGB_SAD, RGB_VAD, _______,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           KC_LGUI, _______,  KC_SPC,     KC_ENT,   MO(3), KC_RALT
                                       //`--------------------------'  `--------------------------'
@@ -95,7 +96,18 @@ BL_STEP, _______, _______, _______, KC_DOWN, KC_LCBR,                           
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           KC_LGUI, _______,  KC_SPC,     KC_ENT, _______, KC_RALT
                                       //`--------------------------'  `--------------------------'
-  )
+  ),
+    [_ARROWSTWO] = LAYOUT_split_3x6_3(
+  //,-----------------------------------------------------.                    ,-----------------------------------------------------.
+       RGB_TOG, KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC,                            KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, _______,
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+      RGB_MOD, KC_MPRV, LCTL_T(KC_MNXT), KC_VOLU, KC_PGUP, KC_UNDS,                     LALT(KC_LEFT), LALT(KC_DOWN), LALT(KC_UP), LALT(KC_RIGHT), KC_RIGHT, KC_BACKSLASH,
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+     KC_MUTE, KC_MSTP, KC_MPLY, KC_VOLD, KC_PGDN, KC_MINS,                      KC_PLUS, KC_END,  KC_END, RGB_SAD, RGB_VAD, _______,
+  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
+                                          KC_LGUI, _______,  KC_SPC,     KC_ENT,   MO(3), KC_RALT
+                                      //`--------------------------'  `--------------------------'
+  ),
 };
 
 #ifdef RGBLIGHT_ENABLE
@@ -126,28 +138,17 @@ BL_STEP, _______, _______, _______, KC_DOWN, KC_LCBR,                           
 #endif
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  switch (keycode) {
+    switch (keycode) {
     case KC_CAPS:
-      if (record->event.pressed) {
-        // do nothing special
-      } else {
-        rgblight_disable();
-      }
-      return true;
-    case LALT_SPACE:
-      if (record->event.pressed) {
-        SEND_STRING(SS_DOWN(X_LALT) SS_TAP(X_SPACE) SS_UP(X_LALT));
-      }
-      return true;
-    case SRCHSEL:
         if (record->event.pressed) {
-        // Mac users, change LCTL to LGUI.
-        SEND_STRING(SS_LCTL("ct") SS_DELAY(100) SS_LCTL("v") SS_TAP(X_ENTER));
-  }
-  return false;
+            // do nothing special
+        } else {
+            rgblight_disable();
+        }
+        return true;
     default:
-      return true;
-  }
+        return true;
+    }
 }
 
 bool led_update_user(led_t led_state) {
@@ -192,7 +193,7 @@ combo_t key_combos[COMBO_COUNT] = {
   [AB_CAPS] = COMBO(caps_lock_combo, KC_CAPS),
   [EU_TAB] = COMBO(tab_combo, KC_TAB),
   [COPY] = COMBO(copy_combo, LALT(KC_C)),
-  [AO_LAYER] = COMBO(layer_combo, MO(SYMBOLS)),
+  [AO_LAYER] = COMBO(layer_combo, MO(_SYMBOLS)),
   [PASTE] = COMBO(paste_combo, LALT(KC_V))
 };
 
