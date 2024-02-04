@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include QMK_KEYBOARD_H
+#include "features/sentence_case.h"
 #include <stdio.h>
 
 #define _DVORAK 0
@@ -118,34 +119,13 @@ BL_STEP, _______, _______, _______, KC_DOWN, KC_LCBR,                           
   ),
 };
 
-#ifdef RGBLIGHT_ENABLE
     layer_state_t layer_state_set_user(layer_state_t state) {
-    switch (biton32(state)) {
-    case _FUNKEYS:
-        rgblight_enable();
-        rgblight_sethsv_noeeprom(HSV_RED);
-        break;
-    case _SYMBOLS:
-        rgblight_enable();
-        rgblight_sethsv_noeeprom(HSV_CYAN);
-        break;
-    case _RANDOM:
-        rgblight_enable();
-        rgblight_sethsv_noeeprom(HSV_BLUE);
-        break;
-   case _NUMPAD:
-        rgblight_enable();
-        rgblight_sethsv_noeeprom(HSV_PINK); 
-        break;
-    default: //  for any other layers, or the default layer
-        rgblight_disable();
-        break;
-    }
+    rgblight_disable();
     return state;
 }
-#endif
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+   if (!process_sentence_case(keycode, record)) { return false; }
     switch (keycode) {
     case KC_CAPS:
         if (record->event.pressed) {

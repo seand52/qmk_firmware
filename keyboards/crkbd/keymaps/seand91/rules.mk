@@ -1,4 +1,4 @@
-RGBLIGHT_ENABLE = yes    # Enable WS2812 RGB underlight.
+RGBLIGHT_ENABLE = no    # Enable WS2812 RGB underlight.
 OLED_ENABLE     = no
 OLED_DRIVER     = SSD1306
 LTO_ENABLE      = yes
@@ -9,3 +9,4 @@ COMMAND_ENABLE = no
 MOUSEKEY_ENABLE = no
 EXTRAKEY_ENABLE = no
 TAP_DANCE_ENABLE = yes
+SRC += features/sentence_case.c
