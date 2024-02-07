@@ -40,5 +40,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define LEADER_TIMEOUT 300
 #define COMBO_COUNT 6
 #define COMBO_TERM 20
+#define DOUBLE_TAP_SHIFT_TURNS_ON_CAPS_WORD
+#define MUSIC_ENABLE = no
+#define LAYER_STATE_8BIT
 
 

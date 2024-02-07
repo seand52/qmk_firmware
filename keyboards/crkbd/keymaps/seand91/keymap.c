@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include QMK_KEYBOARD_H
 #include "features/sentence_case.h"
+#include "features/casemodes.h"
 #include <stdio.h>
 
 #define _DVORAK 0
@@ -45,10 +46,14 @@ tap_dance_action_t tap_dance_actions[] = {
     [TD_DOWN] = ACTION_TAP_DANCE_DOUBLE(LGUI(KC_DOWN), LALT(KC_DOWN)),
 };
 
+enum custom_keycodes {
+  CAMELCASE = SAFE_RANGE
+};
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_DVORAK] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      KC_NO,  KC_QUOTE, KC_COMMA, KC_DOT, KC_P,    KC_Y,        KC_F,    KC_G,    KC_C,    KC_R,    KC_L,    KC_SLASH,
+      CAMELCASE,  KC_QUOTE, KC_COMMA, KC_DOT, KC_P,    KC_Y,        KC_F,    KC_G,    KC_C,    KC_R,    KC_L,    KC_SLASH,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_NO, LCTL_T(KC_A),   LT(_SYMBOLS, KC_O),    KC_E,    LALT_T(KC_U), KC_I,            KC_D,    RALT_T(KC_H),    KC_T,    KC_N,   RCTL_T(KC_S),    KC_MINUS,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
@@ -126,12 +131,20 @@ BL_STEP, _______, _______, _______, KC_DOWN, KC_LCBR,                           
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
    if (!process_sentence_case(keycode, record)) { return false; }
+   if (!process_case_modes(keycode, record)) {
+        return false;
+    }
     switch (keycode) {
     case KC_CAPS:
         if (record->event.pressed) {
             // do nothing special
         } else {
             rgblight_disable();
+        }
+        return true;
+    case CAMELCASE:
+        if (record -> event.pressed) {
+          enable_xcase_with(KC_UNDS);
         }
         return true;
     default:
@@ -156,7 +169,18 @@ void leader_end_user(void) {
         SEND_STRING("x");
     } else if (leader_sequence_one_key(KC_S)) {
         SEND_STRING("x");
+    } else if (leader_sequence_one_key(KC_G)) {
+        SEND_STRING(SS_DOWN(X_LALT) SS_TAP(X_1) SS_UP(X_LALT));
+    }else if (leader_sequence_one_key(KC_C)) {
+        SEND_STRING(SS_DOWN(X_LALT) SS_TAP(X_2) SS_UP(X_LALT));
+    }else if (leader_sequence_one_key(KC_R)) {
+        SEND_STRING(SS_DOWN(X_LALT) SS_TAP(X_3) SS_UP(X_LALT));
+    }else if (leader_sequence_one_key(KC_L)) {
+        SEND_STRING(SS_DOWN(X_LALT) SS_TAP(X_4) SS_UP(X_LALT));
     }
+
+
+
 }
 
 
